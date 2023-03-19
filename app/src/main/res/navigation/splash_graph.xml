@@ -10,4 +10,13 @@
         android:name="com.example.boxcolor.screens.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.boxcolor.screens.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" >
+        <argument
+            android:name="isSignedIn"
+            app:argType="boolean" />
+    </activity>
 </navigation>

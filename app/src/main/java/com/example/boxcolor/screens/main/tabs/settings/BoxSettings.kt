@@ -1,4 +1,8 @@
 package com.example.boxcolor.screens.main.tabs.settings
 
-class BoxSettings {
-}
+import com.example.boxcolor.model.boxes.entities.Box
+
+data class BoxSetting(
+    val box: Box,
+    val enabled: Boolean
+)
