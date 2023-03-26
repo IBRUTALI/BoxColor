@@ -1,6 +1,7 @@
 package com.example.boxcolor.model.accounts.entities
 
 data class Account(
+    val id: Long,
     val username: String,
     val email: String,
     val createdAt: Long = UNKNOWN_CREATED_AT

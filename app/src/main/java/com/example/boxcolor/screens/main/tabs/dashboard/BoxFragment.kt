@@ -56,7 +56,7 @@ class BoxFragment : Fragment() {
             }
         }
 
-    private fun getBoxId(): Int = args.boxId
+    private fun getBoxId(): Long = args.boxId
     private fun getColorValue(): Int = args.colorValue
     private fun getColorName(): String = args.colorName
 

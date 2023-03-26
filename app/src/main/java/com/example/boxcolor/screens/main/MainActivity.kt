@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Repositories.init(applicationContext)
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -97,9 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareTitle(label: CharSequence?, arguments: Bundle?): String {
-
         // code for this method has been copied from Google sources :)
-
         if (label == null) return ""
         val title = StringBuffer()
         val fillInPattern = Pattern.compile("\\{(.+?)\\}")
