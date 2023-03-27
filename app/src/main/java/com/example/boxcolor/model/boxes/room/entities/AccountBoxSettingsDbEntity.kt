@@ -1,9 +1,6 @@
 package com.example.boxcolor.model.boxes.room.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
+import androidx.room.*
 import com.example.boxcolor.model.accounts.room.entities.AccountDbEntity
 
 @Entity(
@@ -32,5 +29,5 @@ import com.example.boxcolor.model.accounts.room.entities.AccountDbEntity
 data class AccountBoxSettingsDbEntity(
     @ColumnInfo(name = "account_id") val accountId: Long,
     @ColumnInfo(name = "box_id") val boxId: Long,
-    @ColumnInfo(name = "is_active") val isActive: Boolean
+    @Embedded val settings: SettingsTuple
 )

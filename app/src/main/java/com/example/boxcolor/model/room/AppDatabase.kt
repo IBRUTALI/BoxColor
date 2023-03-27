@@ -7,13 +7,17 @@ import com.example.boxcolor.model.accounts.room.entities.AccountDbEntity
 import com.example.boxcolor.model.boxes.room.BoxesDao
 import com.example.boxcolor.model.boxes.room.entities.AccountBoxSettingsDbEntity
 import com.example.boxcolor.model.boxes.room.entities.BoxDbEntity
+import com.example.boxcolor.model.boxes.room.views.SettingsDbView
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         AccountDbEntity::class,
         BoxDbEntity::class,
         AccountBoxSettingsDbEntity::class
+    ],
+    views = [
+        SettingsDbView::class
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

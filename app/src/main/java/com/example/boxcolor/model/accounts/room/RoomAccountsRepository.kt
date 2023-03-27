@@ -7,9 +7,11 @@ import com.example.boxcolor.model.EmptyFieldException
 import com.example.boxcolor.model.Field
 import com.example.boxcolor.model.accounts.AccountsRepository
 import com.example.boxcolor.model.accounts.entities.Account
+import com.example.boxcolor.model.accounts.entities.AccountFullData
 import com.example.boxcolor.model.accounts.entities.SignUpData
 import com.example.boxcolor.model.accounts.room.entities.AccountDbEntity
 import com.example.boxcolor.model.accounts.room.entities.AccountUpdateUsernameTuple
+import com.example.boxcolor.model.boxes.entities.BoxAndSettings
 import com.example.boxcolor.model.room.wrapSQLiteException
 import com.example.boxcolor.model.settings.AppSettings
 import com.example.boxcolor.utils.AsyncLoader
@@ -82,6 +84,27 @@ class RoomAccountsRepository(
             return@wrapSQLiteException
         }
 
+    override suspend fun getAllData(): Flow<List<AccountFullData>> {
+        val account = getAccount().first()
+        if (account == null || !account.isAdmin()) throw AuthException()
+
+        return accountsDao.getAllData()
+            .map { accountsAndSettings ->
+                accountsAndSettings.map { accountsAndSettingsTuple ->
+                    AccountFullData(
+                        account = accountsAndSettingsTuple.accountDbEntity.toAccount(),
+                        boxesAndSettings = accountsAndSettingsTuple.settings.map {
+                            BoxAndSettings(
+                                box = it.boxDbEntity.toBox(),
+                                isActive = it.accountBoxSettingsDbEntity.settings.isActive
+                            )
+                        }
+                    )
+                }
+            }
+        return flowOf(emptyList())
+    }
+
     private suspend fun findAccountIdByEmailAndPassword(email: String, password: String): Long {
         val tuple = accountsDao.findByEmail(email) ?: throw AuthException()
         if (tuple.password != password) throw AuthException()
@@ -100,13 +123,14 @@ class RoomAccountsRepository(
     }
 
     private fun getAccountById(accountId: Long): Flow<Account?> {
-        return accountsDao.getById(accountId).map { accountDbEntity -> accountDbEntity?.toAccount() }
+        return accountsDao.getById(accountId)
+            .map { accountDbEntity -> accountDbEntity?.toAccount() }
     }
 
     private suspend fun updateUsernameForAccountId(accountId: Long, newUsername: String) {
-       accountsDao.updateUsername(
-           AccountUpdateUsernameTuple(accountId, newUsername)
-       )
+        accountsDao.updateUsername(
+            AccountUpdateUsernameTuple(accountId, newUsername)
+        )
     }
 
     private class AccountId(val value: Long)

@@ -1,11 +1,14 @@
 package com.example.boxcolor.model.boxes.room
 
+import android.graphics.Color
 import com.example.boxcolor.model.AuthException
 import com.example.boxcolor.model.accounts.AccountsRepository
 import com.example.boxcolor.model.boxes.BoxesRepository
 import com.example.boxcolor.model.boxes.entities.Box
 import com.example.boxcolor.model.boxes.entities.BoxAndSettings
 import com.example.boxcolor.model.boxes.room.entities.AccountBoxSettingsDbEntity
+import com.example.boxcolor.model.boxes.room.entities.BoxAndSettingsTuple
+import com.example.boxcolor.model.boxes.room.entities.SettingsTuple
 import com.example.boxcolor.model.room.wrapSQLiteException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -43,11 +46,11 @@ class RoomBoxesRepository(
         return boxesDao.getBoxesAndSettings(accountId)
             .map { entities ->
                 entities.map {
-                    val boxEntity = it.key
-                    val settingsEntity = it.value
+                    val boxEntity = it.boxesDbEntity
+                    val settingEntity = it.settingsDbEntity
                     BoxAndSettings(
-                        boxEntity.toBox(),
-                        settingsEntity == null || settingsEntity.isActive
+                        box = boxEntity.toBox(),
+                        isActive = settingEntity.settings.isActive
                     )
                 }
             }
@@ -59,7 +62,7 @@ class RoomBoxesRepository(
             AccountBoxSettingsDbEntity(
                 accountId = account.id,
                 boxId = box.id,
-                isActive = isActive
+                settings = SettingsTuple(isActive = isActive)
             )
         )
     }

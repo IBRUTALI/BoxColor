@@ -1,13 +1,7 @@
 package com.example.boxcolor.model.accounts.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.example.boxcolor.model.accounts.entities.SignUpData
-import com.example.boxcolor.model.accounts.room.entities.AccountDbEntity
-import com.example.boxcolor.model.accounts.room.entities.AccountSignInTuple
-import com.example.boxcolor.model.accounts.room.entities.AccountUpdateUsernameTuple
+import androidx.room.*
+import com.example.boxcolor.model.accounts.room.entities.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,5 +18,13 @@ interface AccountsDao {
 
     @Query("SELECT * FROM accounts WHERE id = :accountId")
     fun getById(accountId: Long): Flow<AccountDbEntity?>
+
+    @Transaction
+    @Query("SELECT * FROM accounts WHERE accounts.id = :accountId")
+    fun getAccountAndEditedBoxes(accountId: Long): AccountAndEditedBoxesTuple
+
+    @Transaction
+    @Query("SELECT * FROM accounts")
+    fun getAllData(): Flow<List<AccountAndAllSettingsTuple>>
 
 }

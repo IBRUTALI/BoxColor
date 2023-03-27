@@ -1,6 +1,7 @@
 package com.example.boxcolor.model.accounts
 
 import com.example.boxcolor.model.accounts.entities.Account
+import com.example.boxcolor.model.accounts.entities.AccountFullData
 import com.example.boxcolor.model.accounts.entities.SignUpData
 import kotlinx.coroutines.flow.Flow
 
@@ -38,5 +39,7 @@ interface AccountsRepository {
      * @throws [EmptyFieldException], [AuthException]
      */
     suspend fun updateAccountUsername(newUsername: String)
+
+    suspend fun getAllData(): Flow<List<AccountFullData>>
 
 }
