@@ -1,4 +1,4 @@
-package com.example.boxcolor.model.sqlite
+package com.example.boxcolor.model.room
 
 import android.database.sqlite.SQLiteException
 import com.example.boxcolor.model.StorageException
