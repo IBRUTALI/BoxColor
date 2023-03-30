@@ -7,7 +7,8 @@ import com.example.boxcolor.model.boxes.room.views.SettingsDbView
 
 data class AccountSignInTuple(
     @ColumnInfo(name = "id") val id: Long,
-    @ColumnInfo(name = "password") val password: String
+    @ColumnInfo(name = "hash") val hash: String,
+    @ColumnInfo(name = "salt") val salt: String
 )
 
 data class AccountUpdateUsernameTuple(

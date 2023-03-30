@@ -11,6 +11,7 @@ import com.example.boxcolor.R
 import com.example.boxcolor.Repositories
 import com.example.boxcolor.databinding.FragmentSignInBinding
 import com.example.boxcolor.utils.observeEvent
+import com.example.boxcolor.utils.toCharArray
 import com.example.boxcolor.utils.viewModelCreator
 
 class SignInFragment : Fragment() {
@@ -41,7 +42,7 @@ class SignInFragment : Fragment() {
     private fun onSignInButtonPressed() {
         viewModel.signIn(
             email = binding.emailEditText.text.toString(),
-            password = binding.passwordEditText.text.toString()
+            password = binding.passwordEditText.text.toCharArray()
         )
     }
 

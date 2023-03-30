@@ -14,6 +14,7 @@ import com.example.boxcolor.Repositories
 import com.example.boxcolor.databinding.FragmentSignUpBinding
 import com.example.boxcolor.model.accounts.entities.SignUpData
 import com.example.boxcolor.utils.observeEvent
+import com.example.boxcolor.utils.toCharArray
 import com.example.boxcolor.utils.viewModelCreator
 import com.google.android.material.textfield.TextInputLayout
 
@@ -49,8 +50,8 @@ class SignUpFragment: Fragment() {
         val signUpData = SignUpData(
             email = binding.emailEditText.text.toString(),
             username = binding.usernameEditText.text.toString(),
-            password = binding.passwordEditText.text.toString(),
-            repeatPassword = binding.repeatPasswordEditText.text.toString(),
+            password = binding.passwordEditText.text.toCharArray(),
+            repeatPassword = binding.repeatPasswordEditText.text.toCharArray(),
         )
         viewModel.signUp(signUpData)
     }

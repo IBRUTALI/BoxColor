@@ -15,6 +15,7 @@ import com.example.boxcolor.model.boxes.entities.BoxAndSettings
 import com.example.boxcolor.model.room.wrapSQLiteException
 import com.example.boxcolor.model.settings.AppSettings
 import com.example.boxcolor.utils.AsyncLoader
+import com.example.boxcolor.utils.security.SecurityUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -22,7 +23,8 @@ import kotlinx.coroutines.flow.*
 class RoomAccountsRepository(
     private val accountsDao: AccountsDao,
     private val appSettings: AppSettings,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val securityUtils: SecurityUtils
 ) : AccountsRepository {
 
     private val currentAccountIdFlow = AsyncLoader {
@@ -34,10 +36,10 @@ class RoomAccountsRepository(
         return appSettings.getCurrentAccountId() != AppSettings.NO_ACCOUNT_ID
     }
 
-    override suspend fun signIn(email: String, password: String) =
+    override suspend fun signIn(email: String, password: CharArray) =
         wrapSQLiteException(ioDispatcher) {
             if (email.isBlank()) throw EmptyFieldException(Field.Email)
-            if (password.isBlank()) throw EmptyFieldException(Field.Password)
+            if (password.isEmpty()) throw EmptyFieldException(Field.Password)
 
             delay(1000)
 
@@ -102,18 +104,21 @@ class RoomAccountsRepository(
                     )
                 }
             }
-        return flowOf(emptyList())
     }
 
-    private suspend fun findAccountIdByEmailAndPassword(email: String, password: String): Long {
+    private suspend fun findAccountIdByEmailAndPassword(email: String, password: CharArray): Long {
         val tuple = accountsDao.findByEmail(email) ?: throw AuthException()
-        if (tuple.password != password) throw AuthException()
+        val saltBytes = securityUtils.stringToBytes(tuple.salt)
+        val hashBytes = securityUtils.passwordToHash(password, saltBytes)
+        val hashString = securityUtils.bytesToString(hashBytes)
+        password.fill('*')
+        if (tuple.hash != hashString) throw AuthException()
         return tuple.id
     }
 
     private suspend fun createAccount(signUpData: SignUpData) {
         try {
-            val entity = AccountDbEntity.fromSignUpData(signUpData)
+            val entity = AccountDbEntity.fromSignUpData(signUpData, securityUtils)
             accountsDao.createAccount(entity)
         } catch (e: SQLiteConstraintException) {
             val appException = AccountAlreadyExistsException()

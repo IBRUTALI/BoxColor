@@ -51,6 +51,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentListener)
+        navController = null
+        super.onDestroy()
+        mBinding = null
+    }
+
     override fun onBackPressed() {
         if (isStartDestination(navController?.currentDestination)) {
             super.onBackPressed()
@@ -98,7 +105,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareTitle(label: CharSequence?, arguments: Bundle?): String {
+
         // code for this method has been copied from Google sources :)
+
         if (label == null) return ""
         val title = StringBuffer()
         val fillInPattern = Pattern.compile("\\{(.+?)\\}")
@@ -129,10 +138,5 @@ class MainActivity : AppCompatActivity() {
     private fun getTabsDestination(): Int = R.id.tabsFragment
 
     private fun getSignInDestination(): Int = R.id.signInFragment
-    override fun onDestroy() {
-        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentListener)
-        navController = null
-        super.onDestroy()
-        mBinding = null
-    }
+
 }
